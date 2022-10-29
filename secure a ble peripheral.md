@@ -25,7 +25,7 @@ falls pin ok werden daten ausgegeben sonst nicht.
 
 Nur device information wird ohne pin ausgegeben
 
-Encryption with Libsodium SealedBox:
+Encryption with Libsodium SealedBox (https://stackoverflow.com/questions/42456624/how-can-i-create-or-open-a-libsodium-compatible-sealed-box-in-pure-java):
 
 CpcJavaLibsodiumSealedCryptoboxEncryptionString: https://replit.com/@javacrypto/CpcJavaLibsodiumSealedCryptoboxEncryptionString#Main.java
 
