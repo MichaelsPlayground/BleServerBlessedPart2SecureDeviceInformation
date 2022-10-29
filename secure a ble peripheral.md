@@ -31,6 +31,12 @@ CpcJavaLibsodiumSealedCryptoboxEncryptionString: https://replit.com/@javacrypto/
 
 JavaLibsodiumSealedBoxExample: https://replit.com/@javacrypto/JavaLibsodiumSealedBoxExample
 
+uses: https://github.com/InstantWebP2P/tweetnacl-java/blob/master/src/main/java/com/iwebpp/crypto/TweetNacl.java
+
+implementation "io.github.instantwebp2p:tweetnacl-java:1.1.2"
+
+https://github.com/alphazero/Blake2b
+
 or:
 
 https://github.com/NeilMadden/salty-coffee + https://github.com/alphazero/Blake2b
@@ -137,6 +143,77 @@ answered Mar 22 at 9:02
 Topaco's user avatar
 Topaco
 ```
+
+To generate a Curve X25519 keypair see: https://github.com/java-crypto/cross_platform_crypto/blob/main/Curve25519KeyGeneration/GenerateCurve25519Keypair.java
+
+needs an additional library: https://mvnrepository.com/artifact/org.whispersystems/curve25519-java/
+
+// https://mvnrepository.com/artifact/org.whispersystems/curve25519-java
+implementation group: 'org.whispersystems', name: 'curve25519-java', version: '0.5.0'
+
+
+```plaintext
+import org.whispersystems.curve25519.Curve25519;
+import org.whispersystems.curve25519.Curve25519KeyPair;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+public class GenerateCurve25519Keypair {
+public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+System.out.println("Generate a key pair for Curve25519");
+// you need this library
+// https://github.com/signalapp/curve25519-java
+// https://mvnrepository.com/artifact/org.whispersystems/curve25519-java
+Curve25519KeyPair keyPair = generateCurve25519Keypair();
+byte[] privateKey = keyPair.getPrivateKey();
+byte[] publicKey = keyPair.getPublicKey();
+System.out.println("base64 encoded key data:");
+System.out.println("Curve25519 PrivateKey: " + base64Encoding(privateKey));
+System.out.println("Curve25519 PublicKey:  " + base64Encoding(publicKey));
+}
+
+    public static Curve25519KeyPair generateCurve25519Keypair () {
+        return Curve25519.getInstance(Curve25519.BEST).generateKeyPair();
+    }
+    private static String base64Encoding(byte[] input) {
+        return Base64.getEncoder().encodeToString(input);
+    }
+}
+```
+
+or use TweetNaclFast.java
+
+```plaintext
+		/*
+		 * @description
+		 *   Generates a new random key pair for box and 
+		 *   returns it as an object with publicKey and secretKey members:
+		 * */
+		public static KeyPair keyPair() {
+			KeyPair kp = new KeyPair();
+
+			crypto_box_keypair(kp.getPublicKey(), kp.getSecretKey());
+			return kp;
+		}
+
+		public static KeyPair keyPair_fromSecretKey(byte [] secretKey) {
+			KeyPair kp = new KeyPair();
+			byte [] sk = kp.getSecretKey();
+			byte [] pk = kp.getPublicKey();
+
+			// copy sk
+			for (int i = 0; i < sk.length; i ++)
+				sk[i] = secretKey[i];
+
+			crypto_scalarmult_base(pk, sk);
+			return kp;
+		}
+
+	}
+```
+
 
 https://github.com/terl/lazysodium-java
 
