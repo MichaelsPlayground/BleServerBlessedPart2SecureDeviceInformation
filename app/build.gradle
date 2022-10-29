@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'de.androidcrypto.bleserverblessedpart2'
+    namespace 'de.androidcrypto.bleserverblessedpart2sdi'
     compileSdk 33
 
     defaultConfig {
-        applicationId "de.androidcrypto.bleserverblessedpart2"
+        applicationId "de.androidcrypto.bleserverblessedpart2sdi"
         minSdk 21
         targetSdk 33
         versionCode 1

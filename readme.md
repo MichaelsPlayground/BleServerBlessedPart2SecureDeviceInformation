@@ -1,7 +1,14 @@
-# Bluetooth Low Energy Server with BLESSED-ANDROID library (part 2)
+# Bluetooth Low Energy Server with BLESSED-ANDROID library (part 2) Secure Device Information
 
-This is part 2 of the BLE server (peripheral) example using the code in 
-https://github.com/weliem/bluetooth-server-example.
+This is the extended part 2 of the BLE server (peripheral) example using the code in 
+https://github.com/weliem/bluetooth-server-example but with providing a secure device information.
+
+This app needs a pin that is entered on a new characteristic within Device Information Service. Until the 
+correct pin is entered the ohter services do not rpovide any data output. It is planned that the pin can 
+get changed and is stored on the simulated BLE device for further usage. A secure data transmission is planned 
+as well using a sealed box.
+
+**NOTE: this is a unfinished project and the code is unchanged from part 2 code.**
 
 The code for the server from part 1 is available here: https://github.com/AndroidCrypto/BleServerBlessedOriginal 
 and a description is here: https://medium.com/@androidcrypto/setup-your-own-android-bluetooth-low-energy-server-part-1-dbf8dadd75b5.

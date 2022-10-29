@@ -1,4 +1,4 @@
-package de.androidcrypto.bleserverblessedpart2;
+package de.androidcrypto.bleserverblessedpart2sdi;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;

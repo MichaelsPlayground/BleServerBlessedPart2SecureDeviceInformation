@@ -1,4 +1,4 @@
-package de.androidcrypto.bleserverblessedpart2;
+package de.androidcrypto.bleserverblessedpart2sdi;
 
 import org.junit.Test;
 
