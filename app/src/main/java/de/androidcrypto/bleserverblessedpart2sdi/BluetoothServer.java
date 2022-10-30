@@ -226,8 +226,10 @@ class BluetoothServer {
 
         this.peripheralManager = new BluetoothPeripheralManager(context, bluetoothManager, peripheralManagerCallback);
         this.peripheralManager.removeAllServices();
-
-        DeviceInformationService deviceInformationService = new DeviceInformationService(peripheralManager);
+        // old
+        // DeviceInformationService deviceInformationService = new DeviceInformationService(peripheralManager);
+        // new
+        SecureDeviceInformationService deviceInformationService = new SecureDeviceInformationService(peripheralManager);
         CurrentTimeService currentTimeService = new CurrentTimeService(peripheralManager);
         HeartRateService heartRateService = new HeartRateService(peripheralManager);
         serviceImplementations.put(deviceInformationService.getService(), deviceInformationService);
