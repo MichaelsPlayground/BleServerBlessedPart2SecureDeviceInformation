@@ -1,13 +1,13 @@
 package de.androidcrypto.bleserverblessedpart2sdi;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
-import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED_MITM;
-import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED_MITM;
+import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.os.Build;
 import android.os.Handler;
@@ -45,7 +45,7 @@ class SecureDeviceInformationService extends BaseService {
     // new characteristics, the UUID are not an official UUID
     private static final UUID PIN_VERIFICATION_CHARACTERISTIC_UUID = UUID.fromString("0000ff01-0000-1000-8000-00805f9b34fb");
     private static final UUID PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID = UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb");
-    BluetoothGattCharacteristic pinVerificationStatus = new BluetoothGattCharacteristic(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID, PROPERTY_READ, PERMISSION_READ_ENCRYPTED_MITM);
+    BluetoothGattCharacteristic pinVerificationStatus = new BluetoothGattCharacteristic(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID, PROPERTY_READ | PROPERTY_NOTIFY, PERMISSION_READ);
 
     //private byte[] pinStored = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
     private byte[] pinStored = new byte[] {0x01, 0x02};
@@ -70,6 +70,7 @@ class SecureDeviceInformationService extends BaseService {
 
         // new
         //BluetoothGattCharacteristic pinVerification = new BluetoothGattCharacteristic(PIN_VERIFICATION_CHARACTERISTIC_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
+        //BluetoothGattCharacteristic pinVerification = new BluetoothGattCharacteristic(PIN_VERIFICATION_CHARACTERISTIC_UUID, PROPERTY_WRITE, PERMISSION_WRITE_SIGNED_MITM);
         BluetoothGattCharacteristic pinVerification = new BluetoothGattCharacteristic(PIN_VERIFICATION_CHARACTERISTIC_UUID, PROPERTY_WRITE, PERMISSION_WRITE_ENCRYPTED_MITM);
         service.addCharacteristic(pinVerification);
 
@@ -77,6 +78,10 @@ class SecureDeviceInformationService extends BaseService {
 
         service.addCharacteristic(pinVerificationStatus);
         pinVerificationStatus.addDescriptor(getClientCharacteristicConfigurationDescriptor());
+        //BluetoothGattDescriptor characteristicUserDescriptionDescriptor = getCharacteristicUserDescriptionDescriptor();
+        //characteristicUserDescriptionDescriptor.setValue("enter a 2 byte pin for verification".getBytes(StandardCharsets.UTF_8));
+        //pinVerificationStatus.addDescriptor(characteristicUserDescriptionDescriptor);
+        //pinVerificationStatus.addDescriptor(getCharacteristicUserDescriptionDescriptor());
     }
 
     // changed
@@ -124,6 +129,7 @@ class SecureDeviceInformationService extends BaseService {
         super.onCharacteristicWriteCompleted(central, characteristic, value);
     }
 
+    // new
     @Override
     public void onNotifyingEnabled(@NotNull BluetoothCentral central, @NotNull BluetoothGattCharacteristic characteristic) {
         if (characteristic.getUuid().equals(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID)) {
@@ -131,6 +137,7 @@ class SecureDeviceInformationService extends BaseService {
         }
     }
 
+    // new
     @Override
     public void onNotifyingDisabled(@NotNull BluetoothCentral central, @NotNull BluetoothGattCharacteristic characteristic) {
         if (characteristic.getUuid().equals(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID)) {
@@ -138,20 +145,21 @@ class SecureDeviceInformationService extends BaseService {
         }
     }
 
+    // new
     private void notifyPinVerificationStatus() {
         // check that the last entered pin is correct
         if (pinVerificationStatusBoolean) {
             //return new ReadResponse(GattStatus.SUCCESS, "PIN IS CORRECT".getBytes(StandardCharsets.UTF_8));
             notifyCharacteristicChanged("PIN IS CORRECT".getBytes(StandardCharsets.UTF_8), pinVerificationStatus);
-            handler.postDelayed(notifyRunnable, 1000);
             Timber.i("pinVerificationStatus: %b", pinVerificationStatusBoolean);
         } else {
             notifyCharacteristicChanged("PIN IS NOT CORRECT".getBytes(StandardCharsets.UTF_8), pinVerificationStatus);
-            handler.postDelayed(notifyRunnable, 1000);
             Timber.i("pinVerificationStatus: %b", pinVerificationStatusBoolean);
         }
+        handler.postDelayed(notifyRunnable, 1000);
     }
 
+    // new
     private void stopNotifying() {
         handler.removeCallbacks(notifyRunnable);
     }
@@ -163,6 +171,6 @@ class SecureDeviceInformationService extends BaseService {
 
     @Override
     public String getServiceName() {
-        return "Device Information Service";
+        return "Secure Device Information Service";
     }
 }
