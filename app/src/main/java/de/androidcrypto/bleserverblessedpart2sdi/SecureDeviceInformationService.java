@@ -43,19 +43,18 @@ class SecureDeviceInformationService extends BaseService {
 
     private static final UUID MANUFACTURER_NAME_CHARACTERISTIC_UUID = UUID.fromString("00002A29-0000-1000-8000-00805f9b34fb");
     private static final UUID MODEL_NUMBER_CHARACTERISTIC_UUID = UUID.fromString("00002A24-0000-1000-8000-00805f9b34fb");
+
     // new characteristics, the UUID are not an official UUID
     private static final UUID PIN_VERIFICATION_CHARACTERISTIC_UUID = UUID.fromString("0000ff01-0000-1000-8000-00805f9b34fb");
     private static final UUID PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID = UUID.fromString("0000ff02-0000-1000-8000-00805f9b34fb");
     BluetoothGattCharacteristic pinVerificationStatus = new BluetoothGattCharacteristic(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID, PROPERTY_READ, PERMISSION_READ_ENCRYPTED_MITM);
     private static final UUID PIN_CHANGE_CHARACTERISTIC_UUID = UUID.fromString("0000ff03-0000-1000-8000-00805f9b34fb");
 
-    //private byte[] pinStored = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
     final private int pinLength = 2; // this is too short for real devices, use a maximum of 10 (bytes) length
     private byte[] pinStored = new byte[] {0x01, 0x02}; // my default value, get it from the device's flash..
     private byte[] pinToVarify; // the pin to verify needs to be exact 8 bytes long
     private boolean pinVerificationStatusBoolean = false;
 
-    // new
     private @NotNull final Handler handler = new Handler(Looper.getMainLooper());
     private @NotNull final Runnable notifyRunnable = this::notifyPinVerificationStatus;
 
@@ -164,6 +163,7 @@ class SecureDeviceInformationService extends BaseService {
         super.onCharacteristicWriteCompleted(central, characteristic, value);
     }
 
+    // new
     @Override
     public void onNotifyingEnabled(@NotNull BluetoothCentral central, @NotNull BluetoothGattCharacteristic characteristic) {
         if (characteristic.getUuid().equals(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID)) {
@@ -171,6 +171,7 @@ class SecureDeviceInformationService extends BaseService {
         }
     }
 
+    // new
     @Override
     public void onNotifyingDisabled(@NotNull BluetoothCentral central, @NotNull BluetoothGattCharacteristic characteristic) {
         if (characteristic.getUuid().equals(PIN_VERIFICATION_STATUS_CHARACTERISTIC_UUID)) {
@@ -178,6 +179,7 @@ class SecureDeviceInformationService extends BaseService {
         }
     }
 
+    // new
     @Override
     public ReadResponse onDescriptorRead(@NotNull BluetoothCentral central, @NotNull BluetoothGattDescriptor descriptor) {
         if (descriptor.getUuid().equals(CHARACTERISTIC_USER_DESCRIPTION_DESCRIPTOR_UUID)) {
@@ -196,6 +198,7 @@ class SecureDeviceInformationService extends BaseService {
         return super.onDescriptorRead(central, descriptor);
     }
 
+    // new
     private void notifyPinVerificationStatus() {
         // check that the last entered pin is correct
         if (pinVerificationStatusBoolean) {
